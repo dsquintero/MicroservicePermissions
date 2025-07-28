@@ -1,6 +1,7 @@
 using FluentValidation;
 using MicroservicePermissions.Api.Middlewares;
 using MicroservicePermissions.Application.Features.Permissions.Commands.CreatePermission;
+using MicroservicePermissions.Application.Features.PermissionTypes.Commands.CreatePermissionType;
 using MicroservicePermissions.Application.Interfaces;
 using MicroservicePermissions.Application.Mappings;
 using MicroservicePermissions.Domain.Repositories;
@@ -44,6 +45,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Validators
 builder.Services.AddScoped<IValidator<CreatePermissionCommand>, CreatePermissionCommandValidator>();
+builder.Services.AddScoped<IValidator<CreatePermissionTypeCommand>, CreatePermissionTypeCommandValidator>();
 
 
 // MediatR

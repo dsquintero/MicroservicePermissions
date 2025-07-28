@@ -10,11 +10,11 @@ namespace MicroservicePermissions.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PermissionsController : ControllerBase
+    public class PermissionController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public PermissionsController(IMediator mediator)
+        public PermissionController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -33,7 +33,7 @@ namespace MicroservicePermissions.Api.Controllers
 
             var result = await _mediator.Send(command);
             if (!result)
-                return NotFound($"No se encontró el permiso con ID {id}");
+                return NotFound($"No se encontró el permiso con ID {id} o el tipo de permiso no es válido.");
 
             return NoContent(); // 204
         }

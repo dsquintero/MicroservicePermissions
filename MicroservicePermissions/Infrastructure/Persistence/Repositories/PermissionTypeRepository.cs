@@ -27,5 +27,9 @@ namespace MicroservicePermissions.Infrastructure.Persistence.Repositories
 
         public void Remove(PermissionType permissionType) =>
             _context.PermissionTypes.Remove(permissionType);
+
+        public async Task<bool> ExistsAsync(int id) =>
+            await _context.PermissionTypes.AnyAsync(pt => pt.Id == id);
+
     }
 }

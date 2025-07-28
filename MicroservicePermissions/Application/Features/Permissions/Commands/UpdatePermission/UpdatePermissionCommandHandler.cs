@@ -19,6 +19,10 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Upda
             if (permission == null)
                 return false;
 
+            var typeExists = await _unitOfWork.PermissionTypes.ExistsAsync(request.PermissionTypeId);
+            if (!typeExists)
+                return false;
+
             permission.EmployeeForename = request.EmployeeForename;
             permission.EmployeeSurname = request.EmployeeSurname;
             permission.PermissionTypeId = request.PermissionTypeId;

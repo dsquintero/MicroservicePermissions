@@ -9,5 +9,6 @@ namespace MicroservicePermissions.Domain.Repositories
         Task AddAsync(PermissionType permissionType);
         void Update(PermissionType permissionType);
         void Remove(PermissionType permissionType);
+        Task<bool> ExistsAsync(int id);
     }
 }

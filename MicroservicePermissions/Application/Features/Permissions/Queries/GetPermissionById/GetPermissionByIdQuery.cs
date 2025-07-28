@@ -6,7 +6,6 @@ namespace MicroservicePermissions.Application.Features.Permissions.Queries.GetPe
     public class GetPermissionByIdQuery : IRequest<PermissionDto>
     {
         public int Id { get; set; }
-
         public GetPermissionByIdQuery(int id)
         {
             Id = id;
