@@ -1,4 +1,5 @@
 using FluentValidation;
+using MicroservicePermissions.Api.Middlewares;
 using MicroservicePermissions.Application.Features.Permissions.Commands.CreatePermission;
 using MicroservicePermissions.Application.Interfaces;
 using MicroservicePermissions.Application.Mappings;
@@ -6,9 +7,22 @@ using MicroservicePermissions.Domain.Repositories;
 using MicroservicePermissions.Infrastructure.Persistence;
 using MicroservicePermissions.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Reflection;
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+    .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Reemplaza el logger por Serilog
+builder.Host.UseSerilog();
 
 var assemblies = new[] { Assembly.GetExecutingAssembly() };
 
@@ -55,6 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
