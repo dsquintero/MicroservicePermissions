@@ -37,6 +37,7 @@ builder.Services.AddSwaggerGen();
 
 // Repositorios
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IPermissionTypeRepository, PermissionTypeRepository>();
 
 //UoW
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

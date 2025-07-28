@@ -6,15 +6,22 @@ namespace MicroservicePermissions.Infrastructure.Persistence
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
-        public IPermissionRepository Permissions { get; }
 
-        public UnitOfWork(AppDbContext context, IPermissionRepository permission)
+        public IPermissionRepository Permissions { get; }
+        public IPermissionTypeRepository PermissionTypes { get; }
+
+        public UnitOfWork(
+            AppDbContext context,
+            IPermissionRepository permissionRepository,
+            IPermissionTypeRepository permissionTypeRepository)
         {
-            this._context = context;
-            this.Permissions = permission;
+            _context = context;
+            Permissions = permissionRepository;
+            PermissionTypes = permissionTypeRepository;
         }
 
         public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
+
         public void Dispose() => _context.Dispose();
     }
 }
