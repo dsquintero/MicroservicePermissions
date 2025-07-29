@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroservicePermissions", "MicroservicePermissions\MicroservicePermissions.csproj", "{6BDBFA29-207A-47E3-A0ED-72FE00730079}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroservicePermissions.Test", "MicroservicePermissions.Test\MicroservicePermissions.Test.csproj", "{0C550EDB-1CFE-4640-9E84-42F55F0EC0AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6BDBFA29-207A-47E3-A0ED-72FE00730079}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BDBFA29-207A-47E3-A0ED-72FE00730079}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BDBFA29-207A-47E3-A0ED-72FE00730079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C550EDB-1CFE-4640-9E84-42F55F0EC0AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C550EDB-1CFE-4640-9E84-42F55F0EC0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C550EDB-1CFE-4640-9E84-42F55F0EC0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C550EDB-1CFE-4640-9E84-42F55F0EC0AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
