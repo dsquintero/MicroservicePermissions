@@ -16,6 +16,7 @@ namespace MicroservicePermissions.Application.Mappings
                            opt => opt.MapFrom(src => src.PermissionType.Description));
             CreateMap<CreatePermissionTypeCommand, PermissionType>();
             CreateMap<PermissionType, PermissionTypeDto>();
+            CreateMap<Permission, PermissionElasticDto>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using Elastic.Clients.Elasticsearch;
 using FluentValidation;
 using MicroservicePermissions.Api.Middlewares;
 using MicroservicePermissions.Application.Features.Permissions.Commands.CreatePermission;
@@ -5,6 +6,7 @@ using MicroservicePermissions.Application.Features.PermissionTypes.Commands.Crea
 using MicroservicePermissions.Application.Interfaces;
 using MicroservicePermissions.Application.Mappings;
 using MicroservicePermissions.Domain.Repositories;
+using MicroservicePermissions.Infrastructure.Elasticsearch;
 using MicroservicePermissions.Infrastructure.Kafka;
 using MicroservicePermissions.Infrastructure.Persistence;
 using MicroservicePermissions.Infrastructure.Persistence.Repositories;
@@ -27,10 +29,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 var assemblies = new[] { Assembly.GetExecutingAssembly() };
+var elasticUri = builder.Configuration["Elasticsearch:Uri"];
 
 // DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//ElasticsearchClient
+builder.Services.AddSingleton(provider =>
+{
+    var settings = new ElasticsearchClientSettings(new Uri(elasticUri));
+    var client = new ElasticsearchClient(settings);
+    return client;
+});
+builder.Services.AddScoped<IElasticPermissionIndexer, ElasticPermissionIndexer>();
 
 // Controllers
 builder.Services.AddControllers();

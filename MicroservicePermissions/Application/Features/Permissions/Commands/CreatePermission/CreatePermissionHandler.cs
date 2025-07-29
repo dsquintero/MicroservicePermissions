@@ -13,13 +13,20 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Crea
         private readonly IMapper _mapper;
         private readonly IValidator<CreatePermissionCommand> _validator;
         private readonly IKafkaProducer _kafkaProducer;
+        private readonly IElasticPermissionIndexer _elasticIndexer;
 
-        public CreatePermissionHandler(IUnitOfWork unitOfWork, IMapper mapper, IValidator<CreatePermissionCommand> validator, IKafkaProducer kafkaProducer)
+        public CreatePermissionHandler(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IValidator<CreatePermissionCommand> validator,
+            IKafkaProducer kafkaProducer,
+            IElasticPermissionIndexer elasticIndexer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validator = validator;
             _kafkaProducer = kafkaProducer;
+            _elasticIndexer = elasticIndexer;
         }
 
         public async Task<int> Handle(CreatePermissionCommand request, CancellationToken cancellationToken)
@@ -42,6 +49,9 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Crea
                 Operation = "CreatePermission",
                 Data = request
             });
+
+            var permissionElasticDto = _mapper.Map<PermissionElasticDto>(permission);
+            await _elasticIndexer.IndexAsync(permissionElasticDto);
 
             return permission.Id;
         }
