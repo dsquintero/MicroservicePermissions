@@ -1,7 +1,7 @@
 
 # MicroservicePermissions
 
-Este proyecto es un microservicio desarrollado en ASP.NET Core que permite gestionar permisos laborales para empleados, integrando tecnologías modernas como Kafka, Elasticsearch y SQL Server.
+Este proyecto es un microservicio desarrollado en ASP.NET Core que permite gestionar permisos, integrando tecnologías modernas como Kafka, Elasticsearch y SQL Server.
 
 ## Tecnologías utilizadas
 
@@ -15,20 +15,6 @@ Este proyecto es un microservicio desarrollado en ASP.NET Core que permite gesti
 - Docker & Docker Compose
 - MediatR
 - Serilog
-
-## Estructura del proyecto
-
-```
-MicroservicePermissions/
-├── Application/
-├── Domain/
-├── Infrastructure/
-├── MicroservicePermissions/         # Proyecto principal de la API
-├── MicroservicePermissions.Test/    # Proyecto de pruebas unitarias
-├── Dockerfile
-├── docker-compose.yml
-├── README.md
-```
 
 ## Configuración de entorno
 
@@ -80,6 +66,18 @@ Esto levanta:
 - Elasticsearch: `http://localhost:9200`
 - Kibana: `http://localhost:5601`
 
+## 🛠️ Migraciones de Base de Datos
+
+> ⚠️ **IMPORTANTE:** El proyecto incluye migraciones ya configuradas, pero **debes aplicarlas manualmente** para que se cree la estructura de la base de datos en SQL Server.
+
+### Comando para aplicar las migraciones:
+
+```bash
+dotnet ef database update
+```
+
+Asegúrate de que la cadena de conexión en `appsettings.json` apunte al contenedor o instancia correcta de SQL Server.
+
 ## Swagger
 
 Una vez en ejecución, accede a la documentación Swagger en:
@@ -95,8 +93,6 @@ Para ejecutarlas:
 ```bash
 dotnet test
 ```
-
----
 
 ## Contacto
 
