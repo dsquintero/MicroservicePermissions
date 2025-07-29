@@ -43,15 +43,15 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Crea
             var permission = _mapper.Map<Permission>(request);
             await _unitOfWork.Permissions.AddAsync(permission);
             await _unitOfWork.CompleteAsync();
-
+            string operation = "CreatePermission";
             await _kafkaProducer.SendMessageAsync(new KafkaMessageDto<CreatePermissionCommand>
             {
-                Operation = "CreatePermission",
+                Operation = operation,
                 Data = request
             });
 
             var permissionElasticDto = _mapper.Map<PermissionElasticDto>(permission);
-            await _elasticIndexer.IndexAsync(permissionElasticDto);
+            await _elasticIndexer.IndexAsync(permissionElasticDto, operation.ToLower());
 
             return permission.Id;
         }

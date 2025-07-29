@@ -10,12 +10,18 @@ namespace MicroservicePermissions.Application.Features.Permissions.Queries.GetPe
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IKafkaProducer _kafkaProducer;
+        private readonly IElasticPermissionIndexer _elasticIndexer;
 
-        public GetPermissionByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IKafkaProducer kafkaProducer)
+        public GetPermissionByIdQueryHandler(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IKafkaProducer kafkaProducer,
+            IElasticPermissionIndexer elasticIndexer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _kafkaProducer = kafkaProducer;
+            _elasticIndexer = elasticIndexer;
         }
 
         public async Task<PermissionDto> Handle(GetPermissionByIdQuery request, CancellationToken cancellationToken)
@@ -24,12 +30,15 @@ namespace MicroservicePermissions.Application.Features.Permissions.Queries.GetPe
 
             if (permission == null)
                 return null;
-
+            string operation = "GetPermissionById";
             await _kafkaProducer.SendMessageAsync(new KafkaMessageDto<GetPermissionByIdQuery>
             {
-                Operation = "GetPermissionById",
+                Operation = operation,
                 Data = request
             });
+
+            var permissionElasticDto = _mapper.Map<PermissionElasticDto>(permission);
+            await _elasticIndexer.IndexAsync(permissionElasticDto, operation.ToLower());
 
             return _mapper.Map<PermissionDto>(permission);
         }

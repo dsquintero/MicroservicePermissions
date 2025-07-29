@@ -9,13 +9,12 @@ namespace MicroservicePermissions.Infrastructure.Elasticsearch
         private readonly ElasticsearchClient _client;
         private readonly string _indexName;
 
-        public ElasticPermissionIndexer(ElasticsearchClient client, IConfiguration configuration)
+        public ElasticPermissionIndexer(ElasticsearchClient client)
         {
             _client = client;
-            _indexName = configuration["Elasticsearch:PermissionIndex"]!;
         }
 
-        public async Task IndexAsync(PermissionElasticDto dto)
+        public async Task IndexAsync(PermissionElasticDto dto, string _indexName)
         {
             var response = await _client.IndexAsync(dto, idx => idx.Index(_indexName));
 
