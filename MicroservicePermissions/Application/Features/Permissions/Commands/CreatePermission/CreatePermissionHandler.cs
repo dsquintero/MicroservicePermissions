@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
+using MicroservicePermissions.Application.DTOs;
 using MicroservicePermissions.Application.Interfaces;
 using MicroservicePermissions.Domain.Entities;
 
@@ -11,12 +12,14 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Crea
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<CreatePermissionCommand> _validator;
+        private readonly IKafkaProducer _kafkaProducer;
 
-        public CreatePermissionHandler(IUnitOfWork unitOfWork, IMapper mapper, IValidator<CreatePermissionCommand> validator)
+        public CreatePermissionHandler(IUnitOfWork unitOfWork, IMapper mapper, IValidator<CreatePermissionCommand> validator, IKafkaProducer kafkaProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _validator = validator;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<int> Handle(CreatePermissionCommand request, CancellationToken cancellationToken)
@@ -33,6 +36,12 @@ namespace MicroservicePermissions.Application.Features.Permissions.Commands.Crea
             var permission = _mapper.Map<Permission>(request);
             await _unitOfWork.Permissions.AddAsync(permission);
             await _unitOfWork.CompleteAsync();
+
+            await _kafkaProducer.SendMessageAsync(new KafkaMessageDto<CreatePermissionCommand>
+            {
+                Operation = "CreatePermission",
+                Data = request
+            });
 
             return permission.Id;
         }

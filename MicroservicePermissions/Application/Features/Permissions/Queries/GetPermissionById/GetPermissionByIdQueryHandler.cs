@@ -9,11 +9,13 @@ namespace MicroservicePermissions.Application.Features.Permissions.Queries.GetPe
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IKafkaProducer _kafkaProducer;
 
-        public GetPermissionByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetPermissionByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IKafkaProducer kafkaProducer)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _kafkaProducer = kafkaProducer;
         }
 
         public async Task<PermissionDto> Handle(GetPermissionByIdQuery request, CancellationToken cancellationToken)
@@ -22,6 +24,12 @@ namespace MicroservicePermissions.Application.Features.Permissions.Queries.GetPe
 
             if (permission == null)
                 return null;
+
+            await _kafkaProducer.SendMessageAsync(new KafkaMessageDto<GetPermissionByIdQuery>
+            {
+                Operation = "GetPermissionById",
+                Data = request
+            });
 
             return _mapper.Map<PermissionDto>(permission);
         }

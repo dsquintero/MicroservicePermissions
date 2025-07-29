@@ -5,6 +5,7 @@ using MicroservicePermissions.Application.Features.PermissionTypes.Commands.Crea
 using MicroservicePermissions.Application.Interfaces;
 using MicroservicePermissions.Application.Mappings;
 using MicroservicePermissions.Domain.Repositories;
+using MicroservicePermissions.Infrastructure.Kafka;
 using MicroservicePermissions.Infrastructure.Persistence;
 using MicroservicePermissions.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //Validators
 builder.Services.AddScoped<IValidator<CreatePermissionCommand>, CreatePermissionCommandValidator>();
 builder.Services.AddScoped<IValidator<CreatePermissionTypeCommand>, CreatePermissionTypeCommandValidator>();
+
+//Kafka
+builder.Services.AddScoped<IKafkaProducer, KafkaProducer>();
 
 
 // MediatR
