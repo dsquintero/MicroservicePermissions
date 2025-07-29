@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  microservicepermissions:
+    build:
+      context: ./MicroservicePermissions
+      dockerfile: Dockerfile
+    container_name: microservicepermissions
+    ports:
+      - "5000:80" # API se expone en http://localhost:5000
+    depends_on:
+      - kafka
+      - elasticsearch
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=localhost;Database=PermissionsDb;User Id=SA;Password=Asdf1234$;Encrypt=False;TrustServerCertificate=True;
+      - Kafka__BootstrapServers=kafka:9092
+      - Kafka__Topic=operations-log
+      - Elasticsearch__Uri=http://elasticsearch:9200
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.0.4
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka_data:/bitnami
+      - kafka_log:/tmp/kafka_mounts/logs
+
+volumes:
+  elastic_data:
+  kafka_data:
+  kafka_log:
